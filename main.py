@@ -8,7 +8,13 @@ def main():
 
     if mode == 1:
         user = Fantano()
-        pprint(user.saved_albums)
+        pprint(str(user.total_albums) + " albums in total")
+        pprint("ELIGIBLE ALBUMS (" + str(len(user.eligible_albums['title'])) + "):")
+        print_albums(user.eligible_albums)
+        # pprint("")
+        # pprint("INELIGIBLE ALBUMS (" + str(len(user.ineligible_albums['title'])) + "):")
+        # print_albums(user.ineligible_albums)
+        pprint("temp debugging")
     elif mode == 2:
         user = Basic(mode)
         pprint(user.current_track)

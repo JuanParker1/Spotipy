@@ -17,3 +17,9 @@ def get_mode():
     return mode
 
 
+def print_albums(albums):
+    for i in range(len(albums['title'])):
+        title = albums['title'][i]
+        artists = albums['artists'][i]
+        output = title + " by " + artists
+        pprint(output)
