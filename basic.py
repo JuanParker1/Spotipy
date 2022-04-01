@@ -4,7 +4,7 @@ from spotipy import SpotifyOAuth
 
 class Basic:
     def __init__(self, mode):
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e3550b5fd0c40689e3ebb36d7b5ada2', client_secret='c8ec0360316c43b4ac8dc4908378c2c5', redirect_uri='http://example.com', scope='user-read-currently-playing'))
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e3550b5fd0c40689e3ebb36d7b5ada2', client_secret='c8ec0360316c43b4ac8dc4908378c2c5', redirect_uri='http://localhost:8080', scope='user-read-currently-playing'))
 
         if mode == 2:
             self.current_track = self.get_currently_playing_track()

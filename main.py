@@ -8,19 +8,22 @@ def main():
 
     if mode == 1:
         user = Fantano()
-        pprint(str(user.total_albums) + " albums in total")
-        pprint("ELIGIBLE ALBUMS (" + str(len(user.eligible_albums['title'])) + "):")
-        print_albums(user.eligible_albums)
-        # pprint("")
-        # pprint("INELIGIBLE ALBUMS (" + str(len(user.ineligible_albums['title'])) + "):")
-        # print_albums(user.ineligible_albums)
-        pprint("temp debugging")
+        print(str(user.total_albums) + ' albums in total')
+        print(str(len(user.eligible_albums)) + ' albums are eligible')
+        print(str(len(user.scored_albums)) + ' albums with a score')
+        print('ALL SCORES: ')
+        print_results(user.scored_albums)
+        print('')
+        print('------------------------------------------------------------------------------------')
+        print('')
+        print('AVERAGE SCORE: ')
+        print_avg_score(user.scored_albums)
     elif mode == 2:
         user = Basic(mode)
         pprint(user.current_track)
     else:
-        pprint("Invalid mode - how did you even get here?")
+        pprint('Invalid mode')
 
-
+2
 if __name__ == "__main__":
     main()
