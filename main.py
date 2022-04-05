@@ -4,10 +4,14 @@ from fantano import *
 
 
 def main():
-    mode = get_mode()
+    # mode = get_mode()
+    mode = 1  # TEMP
 
     if mode == 1:
         user = Fantano()
+        user.get_eligible_albums()
+        user.get_scores_2020s()
+        user.get_user_scores()
         print(str(user.total_albums) + ' albums in total')
         print(str(len(user.eligible_albums)) + ' albums are eligible')
         print(str(len(user.scored_albums)) + ' albums with a score')
@@ -18,6 +22,11 @@ def main():
         print('')
         print('AVERAGE SCORE: ')
         print_avg_score(user.scored_albums)
+        print('')
+        print('------------------------------------------------------------------------------------')
+        print('')
+        print('UNSCORED: ')
+        print_unscored_albums(user.eligible_albums)
     elif mode == 2:
         user = Basic(mode)
         pprint(user.current_track)

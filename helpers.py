@@ -27,9 +27,11 @@ def print_albums(albums):
 
 
 def print_results(albums):
+    albums.sort(key=lambda x: (-x[1], x[0].split(' - ')[0], x[0].split(' - ')[1]))
     # (list((artist + ' - ' + title, score, link)))
     for i in albums:
-        print(i[0] + ': ' + str(i[1]) + '/10. URL: ' + i[2])
+        print(str(i[1]) + '/10: ' + i[0])
+        # print(i[0] + ': ' + str(i[1]) + '/10. URL: ' + i[2])
 
 
 def print_avg_score(albums):
@@ -49,10 +51,12 @@ def print_avg_score(albums):
     else:
         print("Embarrassing. Red flannel.")
 
+
 def print_unscored_albums(albums):
     for i in albums:
         if i[1] < 0:
             print(i[0])
+            # print(i[0] + 'URL: ' + i[2])
 
 
 def temp_scores_2010s():
@@ -67,26 +71,16 @@ def temp_scores_2010s():
         page = urlopen(req).read()
         soup = BeautifulSoup(page, 'html.parser')
         results = soup.find(id="centerContent")
+        results = results.find_all("div", class_="albumListRow")
 
-        titles_list = []
-        scores_list = []
+        for album in results:
+            temp_score = album.find_all("div", class_="scoreValue")[0]
+            score = int(re.findall(r'\d+', str(temp_score))[0]) / 10
 
-        # fill titles list
-        meta_tags = soup.find_all('meta', attrs={'itemprop': 'name'})
-        for tag in meta_tags:
-            titles_list.append(html.unescape(str(tag).split('"')[1]).lower())
-
-        # fill scores list
-        temp_scores = results.find_all("div", class_="scoreValue")
-        for score in temp_scores:
-            scores_list.append(int(re.findall(r'\d+', str(score))[0]))
-
-        for j in range(0, len(titles_list)):
-            output[titles_list[j]] = scores_list[j]
+            link = album.find_all("a", href=re.compile("http://open.spotify.com/album/"))
+            if len(link) > 0:
+                output[str(link[0]).split('"')[3]] = int(score)
 
         page_num += 1
-
-    for key in output:
-        print('"' + key + '": ' + str(int(output.get(key) / 10)) + ', ')
 
     return output
