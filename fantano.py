@@ -2009,7 +2009,7 @@ class Fantano:
         "lcd soundsystem - electric lady sessions": 6,
         "moses sumney - græ: part 1": 7,
         "moses sumney - græ": 7,  # part 1 supposed to be there?
-        "rapsody - laila’s wisdom": 8,  # the other one has a weird apostrophe??
+        "rapsody - laila’s wisdom": 8,  # the other one has a weird apostrophe?
 
     }
     link_scores = {
@@ -3850,10 +3850,13 @@ class Fantano:
         "http://open.spotify.com/album/7zPfNw88t2Xv2nVXWKqQls": 5,
         "http://open.spotify.com/album/7zlGVHmxBzJyMUdvg2yrPr": 3
     }
-    scored_albums = []
+    scored_albums = {}
 
     def __init__(self):
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e3550b5fd0c40689e3ebb36d7b5ada2', client_secret='c8ec0360316c43b4ac8dc4908378c2c5', redirect_uri='http://localhost:8080', scope='user-library-read'))
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e3550b5fd0c40689e3ebb36d7b5ada2',
+                                                            client_secret='c8ec0360316c43b4ac8dc4908378c2c5',
+                                                            redirect_uri='http://localhost:8080',
+                                                            scope='user-library-read'))
 
     def get_eligible_albums(self):
         saved_albums = self.sp.current_user_saved_albums(limit=50, offset=0)['items']
@@ -3867,6 +3870,7 @@ class Fantano:
             if len(saved_albums) < offset:
                 break
 
+        # get total number of albums in library
         self.total_albums = len(saved_albums)
 
         for i in saved_albums:
@@ -3924,14 +3928,14 @@ class Fantano:
     def get_user_scores(self):
 
         for i in self.eligible_albums:
+
             search_link = i[2][:4] + i[2][5:]
             if search_link in self.link_scores:
-                self.scored_albums.append((i[0], self.link_scores[search_link], i[2]))
+                self.scored_albums[i[0]] = (self.link_scores[search_link], i[2])
                 i[1] = self.link_scores[search_link]
 
             else:
                 search = remove_extras(i[0].lower())
-
                 search_group_first = ' '
                 search_group_last = ' '
                 if ' & ' in search:
@@ -3939,32 +3943,63 @@ class Fantano:
                     search_group_first = search.split(' & ')[0] + ' - ' + search.split(' - ', 1)[1]
 
                 if search in self.title_scores:
-                    self.scored_albums.append((i[0], self.title_scores[search], i[2]))
+                    self.scored_albums[remove_extras(i[0])] = (self.title_scores[search], i[2])
                     i[1] = self.title_scores[search]
                 elif search_group_first in self.title_scores:
-                    self.scored_albums.append((i[0], self.title_scores[search_group_first], i[2]))
+                    self.scored_albums[remove_extras(i[0])] = (self.title_scores[search_group_first], i[2])
                     i[1] = self.title_scores[search_group_first]
                 elif search_group_last in self.title_scores:
-                    self.scored_albums.append((i[0], self.title_scores[search_group_last], i[2]))
+                    self.scored_albums[remove_extras(i[0])] = (self.title_scores[search_group_last], i[2])
                     i[1] = self.title_scores[search_group_last]
 
         return
 
 
 def remove_extras(album):
-    album = album.replace(' (remastered)', '')
-    album = album.replace(' (deluxe)', '')
-    album = album.replace(' (deluxe edition)', '')
-    album = album.replace(' (deluxe version)', '')
-    album = album.replace(' (extended)', '')
-    album = album.replace(' (extended edition)', '')
-    album = album.replace(' (expanded edition)', '')
-    album = album.replace(' (special edition)', '')
-    album = album.replace(' (special version)', '')
-    album = album.replace(' [platinum edition]', '')  # Beyonce Self Titled
-    album = album.replace(' (the platinum pleasure edition)', '')  # Jessie Ware What's Your Pleasure?
-    album = album.replace(' — paradise edition (special version)', '')  # Lana Del Rey Born To Die
-    album = album.replace(' (bonus track version)', '')  # Lana Del Rey Born To Die
-    album = album.replace(' - the paradise edition', '')  # Lana Del Rey Born To Die
+
+    remove_flair = re.compile(re.escape(' (remastered)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (deluxe)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (deluxe edition)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (deluxe version)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (extended)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (extended edition)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (expanded edition)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (special version)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (special edition)'), re.IGNORECASE)
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' [platinum edition]'), re.IGNORECASE)  # Beyonce self-titled
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (the platinum pleasure edition)'),
+                              re.IGNORECASE)  # Jessie Ware - What's Your Pleasure?
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' — paradise edition (special version)'),
+                              re.IGNORECASE)  # Lana Del Rey - Born To Die
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' (bonus track version)'), re.IGNORECASE)  # Lana Del Rey - Born To Die
+    album = remove_flair.sub('', album)
+
+    remove_flair = re.compile(re.escape(' - the paradise edition'), re.IGNORECASE)  # Lana Del Rey - Born To Die
+    album = remove_flair.sub('', album)
 
     return album
+
