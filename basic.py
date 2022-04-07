@@ -1,10 +1,11 @@
+import config
 import spotipy
 from spotipy import SpotifyOAuth
 
 
 def get_currently_playing_track():
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e3550b5fd0c40689e3ebb36d7b5ada2',
-                                                   client_secret='c8ec0360316c43b4ac8dc4908378c2c5',
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=config.client_id,
+                                                   client_secret=config.client_secret,
                                                    redirect_uri='http://localhost:8080',
                                                    scope='user-read-currently-playing'))
 
