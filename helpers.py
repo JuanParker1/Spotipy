@@ -1,5 +1,3 @@
-# token: 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
-# expires: 04/12/2022
 
 def get_mode():
     print("Program options:")
