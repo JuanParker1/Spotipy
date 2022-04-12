@@ -1,5 +1,8 @@
 # Spotify
 
-A program using the Spotify API; currently shows the user's currently playing track and sorts their saved albums.
+A program that uses the Spotify API.
 
-End goal is to show the review score by music critic Anthony Fantano for each album the user has saved.
+1. Finds every album saved by the user that has been scored by music critic Anthony Fantano, displays every score, the average, and how many albums have each score.
+2. Shows the user's currently playing track.
+3. Shows the user's top artists
+4. Shows the user's top tracks
